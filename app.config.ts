@@ -3,8 +3,8 @@ import type { ConfigContext, ExpoConfig } from '@expo/config';
 export default ({ config }: ConfigContext): ExpoConfig => {
   return {
     ...config,
-    name: 'Monitoreo-Escolar',
-    slug: 'Monitoreo-Escolar',
+    name: 'frontend-calidad',
+    slug: 'frontend-calidad',
     extra: { 
       API_URL: 'https://backend-calidad-production.up.railway.app/api'
      }
