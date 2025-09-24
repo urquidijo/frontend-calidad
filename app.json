@@ -43,6 +43,14 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "API_URL": "https://backend-calidad-production.up.railway.app/api",
+      "router": {},
+      "eas": {
+        "projectId": "4eca210a-755d-414c-8be0-ef7032efb29d"
+      }
+    },
+    "owner": "urquidijo"
   }
 }
