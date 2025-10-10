@@ -54,7 +54,8 @@ export default function TrackChildScreen() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const { data } = await api.get(`/buses/${childId}/bus`);
+      // NUEVA API
+      const { data } = await api.get(`/students/${childId}/bus`);
       const fetchedBus = data?.bus ?? null;
 
       if (!fetchedBus) {
@@ -68,17 +69,31 @@ export default function TrackChildScreen() {
         codigo: fetchedBus.codigo ?? fetchedBus.code ?? fetchedBus.id,
         nombre: fetchedBus.nombre,
         placa: fetchedBus.placa,
-        driver_name: fetchedBus.driver_name ?? null,
-        driver_phone: fetchedBus.driver_phone ?? null,
+        driver_name: fetchedBus.driver_name ?? fetchedBus.conductor?.nombre ?? null,
+        driver_phone: fetchedBus.driver_phone ?? fetchedBus.conductor?.telefono ?? null,
         status: fetchedBus.status ?? null,
-        last_location: fetchedBus.last_location ?? null,
-        colegioId: fetchedBus.colegioId ?? null,
+        last_location: fetchedBus.last_location
+          ? {
+              lat: Number(fetchedBus.last_location.lat),
+              // soporta lng o lon
+              lng: Number(
+                fetchedBus.last_location.lng ?? fetchedBus.last_location.lon
+              ),
+              timestamp: fetchedBus.last_location.timestamp,
+            }
+          : null,
+        colegioId:
+          fetchedBus.colegioId ??
+          fetchedBus.schoolId ??
+          fetchedBus.colegio?.id ??
+          null,
         route_coords: Array.isArray(fetchedBus.route_coords)
           ? fetchedBus.route_coords.map((p: any) => ({
               id: Number(p.id),
-              nombre: p.nombre,
+              nombre: p.nombre ?? p.name,
               lat: Number(p.lat),
-              lng: Number(p.lng),
+              // soporta lng o lon
+              lng: Number(p.lng ?? p.lon),
             }))
           : null,
         child_stop: fetchedBus.child_stop ?? null,
@@ -100,7 +115,11 @@ export default function TrackChildScreen() {
             lat: s.lat ?? null,
             lon: s.lon ?? null,
           });
+        } else {
+          setSchool(null);
         }
+      } else {
+        setSchool(null);
       }
     } catch (err) {
       console.warn("Error fetching child bus:", err);
@@ -129,23 +148,37 @@ export default function TrackChildScreen() {
   };
 
   const goToMap = () => {
-    if (!bus) return;
+    // Permite abrir mapa aunque no haya monitoreo (usa colegio/route si existen)
     const routeCoordinates =
-      bus.route_coords?.map((p) => ({
+      bus?.route_coords?.map((p) => ({
         latitude: p.lat,
         longitude: p.lng,
         nombre: p.nombre,
         estudianteId: p.id,
       })) ?? [];
 
-    const busPosition = bus.last_location
+    const busPosition = bus?.last_location
       ? { latitude: bus.last_location.lat, longitude: bus.last_location.lng }
       : null;
 
+    const schoolPosition =
+      school?.lat && school?.lon
+        ? { latitude: Number(school.lat), longitude: Number(school.lon) }
+        : null;
+
+    if (!busPosition && !schoolPosition && routeCoordinates.length === 0) {
+      Alert.alert(
+        "Sin datos de mapa",
+        "No hay ubicación del bus ni coordenadas del colegio o la ruta."
+      );
+      return;
+    }
+
     nav.navigate("Map" as any, {
-      routeCoordinates,
-      busPosition,
-      busId: bus.id,
+      routeCoordinates, // puede estar vacía
+      busPosition, // puede ser null
+      schoolPosition, // NUEVO: para que puedas mostrar el colegio
+      busId: bus?.id ?? null,
       childId,
     } as any);
   };
@@ -174,6 +207,12 @@ export default function TrackChildScreen() {
         return "⏸️ Fuera de servicio";
     }
   };
+
+  const canOpenMap = !!(
+    (school?.lat && school?.lon) ||
+    bus?.last_location ||
+    (bus?.route_coords && bus?.route_coords.length > 0)
+  );
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -224,9 +263,9 @@ export default function TrackChildScreen() {
                 onPress={goToMap}
                 style={[
                   styles.primaryBtn,
-                  bus.status !== "EN_RUTA" && { opacity: 0.5 },
+                  !canOpenMap && { opacity: 0.5 },
                 ]}
-                disabled={bus.status !== "EN_RUTA"}
+                disabled={!canOpenMap}
               >
                 <Text style={styles.primaryTxt}>🗺 Ver en mapa</Text>
               </Pressable>
