@@ -27,7 +27,7 @@ export type RootStackParamList = {
         busPosition?: { latitude: number; longitude: number };
         childId?: number;
         busId?: number;
-        schoolStop?: { latitude: number; longitude: number; nombre?: string };
+        schoolPosition?: { latitude: number; longitude: number; nombre?: string };
       }
     | undefined;
 };
