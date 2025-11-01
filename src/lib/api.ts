@@ -2,11 +2,19 @@ import axios, { AxiosHeaders } from 'axios';
 import Constants from 'expo-constants';
 import * as SecureStore from 'expo-secure-store';
 
-const BASE_URL = Constants.expoConfig?.extra?.API_URL as string;
+const expoExtra = Constants.expoConfig?.extra ?? (Constants as any)?.manifest?.extra ?? {};
+const BASE_URL =
+  process.env.EXPO_PUBLIC_API_URL ??
+  (typeof expoExtra?.API_URL === 'string' ? expoExtra.API_URL : undefined);
+
 export const api = axios.create({
   baseURL: BASE_URL,
-  timeout: 10000,
+  timeout: 60000,
 });
+
+if (!BASE_URL) {
+  console.warn('[api] BASE_URL no definido, revisa EXPO_PUBLIC_API_URL o extra.API_URL');
+}
 
 // Helper para leer token
 async function getToken() {
