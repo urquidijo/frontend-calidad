@@ -112,7 +112,7 @@ export default function HomeScreen() {
       <View style={styles.body}>
         <View style={styles.headerRow}>
           <View style={{ flex: 1 }}>
-            <Text style={styles.sectionTitle}>Tus hijos</Text>
+            <Text testID="home-title" style={styles.sectionTitle}>Tus hijos</Text>
             <Text style={styles.subtitle}>
               Monitorea la llegada y ruta en tiempo real
             </Text>
