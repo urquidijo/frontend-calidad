@@ -112,7 +112,13 @@ export default function HomeScreen() {
       <View style={styles.body}>
         <View style={styles.headerRow}>
           <View style={{ flex: 1 }}>
-            <Text testID="home-title" style={styles.sectionTitle}>Tus hijos</Text>
+            <Text
+              testID="home-title"
+              accessibilityLabel="home-title"
+              style={styles.sectionTitle}
+            >
+              Tus hijos
+            </Text>
             <Text style={styles.subtitle}>
               Monitorea la llegada y ruta en tiempo real
             </Text>
@@ -152,6 +158,8 @@ export default function HomeScreen() {
                 styles.cta,
                 pressed && { transform: [{ scale: 0.98 }] },
               ]}
+              accessibilityLabel="btn-buscar-colegio"
+              testID="btn-buscar-colegio"
             >
               <Text style={styles.ctaTxt}>Buscar colegio afiliado</Text>
             </Pressable>

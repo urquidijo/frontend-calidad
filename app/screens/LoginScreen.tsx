@@ -82,6 +82,7 @@ export default function LoginScreen() {
                 <Text style={styles.label}>Email</Text>
                 <TextInput
                   testID="login-email"  
+                  accessibilityLabel="login-email"
                   value={email}
                   onChangeText={setEmail}
                   placeholder="tucorreo@ejemplo.com"
@@ -100,6 +101,7 @@ export default function LoginScreen() {
                 <View style={styles.passwordRow}>
                   <TextInput
                     testID="login-password"
+                    accessibilityLabel="login-password"
                     value={password}
                     onChangeText={setPassword}
                     placeholder="Tu contraseña"
@@ -120,6 +122,7 @@ export default function LoginScreen() {
 
               <Pressable
                 testID="login-button"
+                accessibilityLabel="login-button"
                 onPress={onSubmit}
                 disabled={!canSubmit}
                 style={({ pressed }) => [
@@ -139,6 +142,7 @@ export default function LoginScreen() {
 
               <Pressable
                 testID="login-register-button"
+                accessibilityLabel="login-register-button"
                 onPress={() => nav.navigate("Register")}
                 style={({ pressed }) => [styles.secondaryBtn, pressed && { opacity: 0.92 }]}
               >

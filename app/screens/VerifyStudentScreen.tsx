@@ -243,6 +243,8 @@ export default function VerifyStudentScreen() {
                   pressed && { transform: [{ scale: 0.98 }] },
                 ]}
                 accessibilityRole="button"
+                accessibilityLabel="btn-verificar-alumno"
+                testID="btn-verificar-alumno"
                 accessibilityState={{
                   disabled:
                     checking || linking || (!ci.trim() && !codigo.trim()),
@@ -285,6 +287,8 @@ export default function VerifyStudentScreen() {
                       pressed && { transform: [{ scale: 0.98 }] },
                     ]}
                     accessibilityRole="button"
+                    accessibilityLabel="btn-vincular-alumno"
+                    testID="btn-vincular-alumno"
                   >
                     {linking ? (
                       <ActivityIndicator color="#fff" />
