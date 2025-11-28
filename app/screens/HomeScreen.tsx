@@ -179,6 +179,8 @@ export default function HomeScreen() {
             renderItem={({ item }) => (
               <Pressable
                 onPress={() => nav.navigate("TrackChild", { childId: item.id })}
+                accessibilityLabel={`child-card-${item.id}`}
+                testID={`child-card-${item.id}`}
                 style={({ pressed }) => [
                   styles.childCard,
                   pressed && { opacity: 0.97 },

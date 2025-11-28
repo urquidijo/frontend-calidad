@@ -245,6 +245,8 @@ export default function TrackChildScreen() {
                 onPress={goToMap}
                 style={[styles.primaryBtn, !canOpenMap && { opacity: 0.5 }]}
                 disabled={!canOpenMap}
+                accessibilityLabel="btn-ver-mapa"
+                testID="btn-ver-mapa"
               >
                 <Text style={styles.primaryTxt}>🗺 Ver en mapa</Text>
               </Pressable>
