@@ -18,7 +18,7 @@ import type { RootStackParamList } from "../navigation/RootNavigator";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { api } from "../../src/lib/api";
 
-type School = { id: string; nombre: string; direccion?: string };
+type School = { id: number; nombre: string; direccion?: string };
 
 export default function SelectSchoolScreen() {
   const nav = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -35,17 +35,17 @@ export default function SelectSchoolScreen() {
   }, [q]);
 
   const fetchSchools = useCallback(async () => {
-    try {
-      setLoading(true);
-      const { data } = await api.get("/schools");
-      setSchools(data.items ?? []);
-    } catch (err) {
-      console.warn("Error fetching schools", err);
-      setSchools([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  try {
+    setLoading(true);
+    const { data } = await api.get<School[]>("/schools");
+    setSchools(data);                // 👈 ya no uses data.items
+  } catch (err) {
+    console.warn("Error fetching schools", err);
+    setSchools([]);
+  } finally {
+    setLoading(false);
+  }
+}, []);
 
   useEffect(() => {
     let mounted = true;
@@ -149,7 +149,7 @@ export default function SelectSchoolScreen() {
         ) : (
           <FlatList
             data={filtered}
-            keyExtractor={(it) => it.id}
+            keyExtractor={(it) => String(it.id)}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
@@ -172,7 +172,7 @@ export default function SelectSchoolScreen() {
               <Pressable
                 onPress={() =>
                   nav.navigate("VerifyStudent", {
-                    schoolId: item.id,
+                    schoolId: String(item.id),
                     schoolName: item.nombre,
                   })
                 }
@@ -186,7 +186,7 @@ export default function SelectSchoolScreen() {
                 <View
                   style={[
                     styles.avatar,
-                    { backgroundColor: avatarColor(item.id) },
+                    { backgroundColor: avatarColor(String(item.id)) },
                   ]}
                 >
                   <Text style={styles.avatarTxt}>
